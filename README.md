@@ -9,6 +9,28 @@ board.
 
 `maw workboard` is kept as an alias for `maw board`.
 
+## 🚀 Quick Start
+
+You need [`maw`](https://github.com/Soul-Brews-Studio/maw-js) (public) + Bun already installed.
+
+```sh
+# 1. Install this plugin (owner/repo form — NOT github:)
+maw plugin install MEYD-605/maw-workboard
+
+# 2. Install the runtime — easiest: a prebuilt bundle (no build tools needed)
+#    Download the bundle for your OS from:
+#    https://github.com/MEYD-605/maw-ssh/releases/tag/workboard-v0.1.0
+maw board install --prebuilt ./workboard-prebuilt-<os>.tar.gz
+
+# 3. Open the board
+maw board
+```
+
+**Bundles:** Linux x64 · macOS arm64 · macOS Intel — see the [release page](https://github.com/MEYD-605/maw-ssh/releases/tag/workboard-v0.1.0).
+
+> **Devs** (have node + cargo): build from source instead —
+> `git clone https://github.com/MEYD-605/maw-ssh && cd maw-ssh && bun install && cd .. && maw board install --source ./maw-ssh`
+
 ## Status
 
 Implemented:
