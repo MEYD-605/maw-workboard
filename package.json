@@ -1,0 +1,16 @@
+{
+  "name": "@meyd-605/maw-plugin-workboard",
+  "version": "0.1.0",
+  "type": "module",
+  "private": false,
+  "description": "maw-js plugin wrapper for the Oracle Workboard sidecar.",
+  "main": "./index.ts",
+  "scripts": {
+    "check": "tsc -p tsconfig.json --noEmit"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "bun-types": "^1.3.4",
+    "typescript": "^5.0.0"
+  }
+}

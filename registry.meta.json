@@ -1,0 +1,86 @@
+{
+  "$schema": "https://maw.sh/schemas/plugin-registry/v1.json",
+  "id": "workboard",
+  "name": "Oracle Workboard",
+  "version": "0.1.0",
+  "status": "scaffold",
+  "category": "sidecar",
+  "tags": ["workboard", "sshx", "terminal", "collaboration", "sidecar"],
+  "summary": "Manage the Oracle Workboard — a collaborative terminal & dashboard sidecar powered by the maw-ssh/sshx fork.",
+  "description": "The workboard plugin wraps the MEYD-605/maw-ssh sidecar runtime, providing install, serve, status, and Android APK packaging commands through the maw CLI. It binds to a separate port (default :3457) so it never collides with maw-js itself.",
+  "author": {
+    "name": "MEYD-605",
+    "url": "https://github.com/MEYD-605"
+  },
+  "repository": "https://github.com/MEYD-605/maw-js",
+  "directory": "plugins/workboard",
+  "license": "MIT",
+  "runtime": {
+    "sdk": "^1.0.0",
+    "schemaVersion": 1,
+    "entry": "./index.ts",
+    "weight": 20
+  },
+  "cli": {
+    "command": "maw board",
+    "aliases": ["maw workboard"],
+    "subcommands": [
+      {
+        "name": "open",
+        "summary": "Open workboard in the default browser.",
+        "usage": "maw board open [--host HOST] [--port PORT]"
+      },
+      {
+        "name": "install",
+        "summary": "Install/build the sidecar runtime from the maw-ssh source checkout.",
+        "usage": "maw board install [--source PATH] [--version REF]"
+      },
+      {
+        "name": "serve",
+        "summary": "Start the workboard sidecar server.",
+        "usage": "maw board serve [--dev] [--source PATH] [--host HOST] [--port PORT] [--password VALUE]"
+      },
+      {
+        "name": "status",
+        "summary": "Show sidecar status, source dir, and URL.",
+        "usage": "maw board status"
+      },
+      {
+        "name": "stop",
+        "summary": "Stop a running workboard sidecar.",
+        "usage": "maw board stop"
+      },
+      {
+        "name": "password",
+        "summary": "Set or rotate the workboard access password.",
+        "usage": "maw board password [--password VALUE]"
+      },
+      {
+        "name": "apk",
+        "summary": "Package the workboard PWA as an Android APK via Bubblewrap/TWA.",
+        "usage": "maw board apk [--source PATH] [--version REF]"
+      }
+    ]
+  },
+  "capabilities": [
+    "fs:read",
+    "fs:write",
+    "proc:spawn",
+    "net:listen",
+    "net:fetch",
+    "workboard:sidecar"
+  ],
+  "links": {
+    "docs": "./USAGE.md",
+    "readme": "./README.md",
+    "source": "https://github.com/MEYD-605/maw-ssh"
+  },
+  "platforms": ["linux", "darwin"],
+  "requirements": {
+    "sidecar": "MEYD-605/maw-ssh (sshx fork) source checkout",
+    "optional": [
+      "Android SDK + JDK (for maw board apk)",
+      "@nicolo-ribaudo/bubblewrap (for APK packaging)"
+    ]
+  }
+}
