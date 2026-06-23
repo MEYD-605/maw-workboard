@@ -10,7 +10,8 @@ export default definePlugin({
   "cli": {
     "command": "board",
     "aliases": [
-      "workboard"
+      "workboard",
+      "rs"
     ],
     "help": "maw board open|serve|install|status|stop|password|apk [options]",
     "flags": {

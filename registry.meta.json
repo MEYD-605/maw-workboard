@@ -23,7 +23,7 @@
   },
   "cli": {
     "command": "maw board",
-    "aliases": ["maw workboard"],
+    "aliases": ["maw workboard", "maw rs"],
     "subcommands": [
       {
         "name": "open",
