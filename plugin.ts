@@ -8,12 +8,12 @@ export default definePlugin({
   "description": "Manage the Oracle Workboard sidecar powered by the maw-ssh sshx fork.",
   "author": "MEYD-605",
   "cli": {
-    "command": "board",
+    "command": "rs",
     "aliases": [
-      "workboard",
-      "rs"
+      "board",
+      "workboard"
     ],
-    "help": "maw board open|serve|install|status|stop|password|apk [options]",
+    "help": "maw rs open|serve|install|status|stop|password|apk [options]",
     "flags": {
       "--source": "string",
       "--prebuilt": "string",

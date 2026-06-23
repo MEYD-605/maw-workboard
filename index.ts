@@ -1,8 +1,8 @@
 import type { InvokeContext, InvokeResult } from "maw-js/plugin/types";
 
 export const command = {
-  name: "board",
-  aliases: ["workboard", "rs"],
+  name: "rs",
+  aliases: ["board", "workboard"],
   description: "Manage the Oracle Workboard sidecar powered by the maw-ssh sshx fork.",
 };
 

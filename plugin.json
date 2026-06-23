@@ -6,9 +6,9 @@
   "description": "Manage the Oracle Workboard sidecar powered by the maw-ssh sshx fork.",
   "author": "MEYD-605",
   "cli": {
-    "command": "board",
-    "aliases": ["workboard", "rs"],
-    "help": "maw board open|serve|install|status|stop|password|apk [options]",
+    "command": "rs",
+    "aliases": ["board", "workboard"],
+    "help": "maw rs open|serve|install|status|stop|password|apk [options]",
     "flags": {
       "--source": "string",
       "--prebuilt": "string",
