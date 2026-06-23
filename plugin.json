@@ -7,7 +7,7 @@
   "author": "MEYD-605",
   "cli": {
     "command": "board",
-    "aliases": ["workboard"],
+    "aliases": ["workboard", "rs"],
     "help": "maw board open|serve|install|status|stop|password|apk [options]",
     "flags": {
       "--source": "string",
