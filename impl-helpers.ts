@@ -6,6 +6,8 @@ export const DEFAULT_WORKBOARD_PORT = 3457;
 export const DEFAULT_WORKBOARD_HOST = "127.0.0.1";
 export const DEFAULT_SOURCE_DIR = join(homedir(), "Code", "github.com", "MEYD-605", "maw-ssh");
 export const DEFAULT_URL_FILE = join(homedir(), ".sshx-oracle-url.txt");
+export const DEFAULT_SSH_URL_FILE = join(homedir(), ".sshx-ssh-url.txt");
+export const DEFAULT_SSH_SERVER = process.env.MAW_RS_SSH_SERVER ?? "https://ssh.clubsxai.com";
 
 export interface WorkboardOptions {
   open?: boolean;
@@ -17,6 +19,10 @@ export interface WorkboardOptions {
   passwordAction?: string;
   password?: string;
   apk?: boolean;
+  ssh?: boolean;
+  sshAction?: string;
+  sshShell?: string;
+  sshReadonly?: boolean;
   dev?: boolean;
   source?: string;
   prebuilt?: string;
@@ -45,11 +51,16 @@ function hasFlag(args: string[], name: string): boolean {
 export function parseWorkboardArgs(args: string[]): WorkboardOptions {
   const positionals = args.filter((arg) => !arg.startsWith("--"));
   const subcommand = positionals[0];
+  const isSsh = subcommand === "ssh";
   const portRaw = takeFlag(args, "--port");
   const port = portRaw ? Number(portRaw) : undefined;
 
   return {
-    open: args.length === 0 || subcommand === "open",
+    open: !isSsh && (args.length === 0 || subcommand === "open"),
+    ssh: isSsh,
+    sshAction: isSsh ? (positionals[1] ?? "start") : undefined,
+    sshShell: takeFlag(args, "--shell"),
+    sshReadonly: hasFlag(args, "--readonly"),
     install: subcommand === "install" || hasFlag(args, "--install"),
     serve: subcommand === "serve" || hasFlag(args, "--serve"),
     status: subcommand === "status" || hasFlag(args, "--status"),
@@ -107,6 +118,9 @@ export function renderWorkboardStatus(status: WorkboardStatus): string {
     "  maw board stop",
     "  maw board password status",
     "  maw board apk [--source PATH] [--version REF]",
+    "  maw rs ssh start [--shell SHELL] [--readonly]",
+    "  maw rs ssh status",
+    "  maw rs ssh stop",
     "",
     "status: sidecar wrapper scaffold only; runtime implementation pending review",
   ].join("\n");

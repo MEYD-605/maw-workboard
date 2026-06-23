@@ -9,7 +9,7 @@ import { homedir } from "node:os";
 import { dirname, join } from "node:path";
 import type { WorkboardServerFeatures } from "./features";
 
-export type WorkboardProcessKind = "server" | "client";
+export type WorkboardProcessKind = "server" | "client" | "ssh";
 
 export interface WorkboardRuntimeState {
   serverPid?: number;
@@ -22,6 +22,8 @@ export interface WorkboardRuntimeState {
   port?: number;
   origin?: string;
   boardUrl?: string;
+  sshUrl?: string;
+  sshServer?: string;
   urlFile?: string;
   passwordEnabled?: boolean;
   startedAt?: string;

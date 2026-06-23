@@ -59,6 +59,11 @@
         "name": "apk",
         "summary": "Package the workboard PWA as an Android APK via Bubblewrap/TWA.",
         "usage": "maw rs apk [--source PATH] [--version REF]"
+      },
+      {
+        "name": "ssh",
+        "summary": "Share a local shell via ssh.clubsxai.com (E2E terminal).",
+        "usage": "maw rs ssh start|status|stop [--shell SHELL] [--readonly]"
       }
     ]
   },

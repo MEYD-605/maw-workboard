@@ -13,7 +13,7 @@ export default definePlugin({
       "board",
       "workboard"
     ],
-    "help": "maw rs open|serve|install|status|stop|password|apk [options]",
+    "help": "maw rs open|serve|install|status|stop|password|apk|ssh [options]",
     "flags": {
       "--source": "string",
       "--prebuilt": "string",
