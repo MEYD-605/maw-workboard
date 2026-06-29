@@ -1,4 +1,4 @@
-import { isPidAlive, readPid, removePid } from "./state";
+import { isPidAlive, readPid, removePid, removeSidecarLock } from "./state";
 
 function stopPid(pid: number | undefined): string {
   if (!pid) return "not running";
@@ -23,6 +23,7 @@ export async function cmdWorkboardStop(): Promise<void> {
   const serverResult = stopPid(server);
   removePid("client");
   removePid("server");
+  removeSidecarLock();
   console.log([
     "Oracle Workboard stop",
     `client: ${clientResult}`,

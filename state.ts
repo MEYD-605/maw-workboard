@@ -1,15 +1,18 @@
 import {
+  closeSync,
   existsSync,
   mkdirSync,
+  openSync,
   readFileSync,
   rmSync,
   writeFileSync,
+  writeSync,
 } from "node:fs";
 import { homedir } from "node:os";
 import { dirname, join } from "node:path";
 import type { WorkboardServerFeatures } from "./features";
 
-export type WorkboardProcessKind = "server" | "client";
+export type WorkboardProcessKind = "server" | "client" | "ssh";
 
 export interface WorkboardRuntimeState {
   serverPid?: number;
@@ -22,6 +25,8 @@ export interface WorkboardRuntimeState {
   port?: number;
   origin?: string;
   boardUrl?: string;
+  sshUrl?: string;
+  sshServer?: string;
   urlFile?: string;
   passwordEnabled?: boolean;
   startedAt?: string;
@@ -161,6 +166,92 @@ export function readTextIfExists(path: string): string | undefined {
 export function writePrivateText(path: string, value: string): void {
   ensureParentDir(path);
   writeFileSync(path, value.endsWith("\n") ? value : `${value}\n`, { mode: 0o600 });
+}
+
+export interface SidecarLockRecord {
+  ownerPid: number;
+  serverPid?: number;
+  clientPid?: number;
+  origin?: string;
+  startedAt: string;
+}
+
+export function sidecarLockPath(): string {
+  return join(ensureStateDir(), "sidecar.lock");
+}
+
+export function readSidecarLock(): SidecarLockRecord | undefined {
+  const raw = readTextIfExists(sidecarLockPath());
+  if (!raw) return undefined;
+  try {
+    return JSON.parse(raw) as SidecarLockRecord;
+  } catch {
+    const pid = Number(raw.split("\n")[0]);
+    return Number.isInteger(pid) && pid > 0
+      ? { ownerPid: pid, startedAt: "" }
+      : undefined;
+  }
+}
+
+export function writeSidecarLock(record: SidecarLockRecord): void {
+  writePrivateText(sidecarLockPath(), JSON.stringify(record));
+}
+
+export function removeSidecarLock(): void {
+  rmSync(sidecarLockPath(), { force: true });
+}
+
+function sidecarLockHeldByLiveProcess(lock: SidecarLockRecord): boolean {
+  return isPidAlive(lock.serverPid) || isPidAlive(lock.clientPid);
+}
+
+export function cleanupStaleSidecarLock(): void {
+  const lock = readSidecarLock();
+  if (!lock) return;
+  if (sidecarLockHeldByLiveProcess(lock)) {
+    throw new Error(
+      `maw board: sidecar already running (server=${lock.serverPid ?? "none"}, client=${lock.clientPid ?? "none"}); run maw board stop first`,
+    );
+  }
+  removeSidecarLock();
+}
+
+/** Atomically create sidecar.lock (O_EXCL) before async startup. */
+export function acquireSidecarLock(): void {
+  cleanupStaleSidecarLock();
+  const path = sidecarLockPath();
+  const pending: SidecarLockRecord = {
+    ownerPid: process.pid,
+    startedAt: new Date().toISOString(),
+  };
+  try {
+    const fd = openSync(path, "wx", 0o600);
+    try {
+      writeSync(fd, JSON.stringify(pending));
+    } finally {
+      closeSync(fd);
+    }
+  } catch (err) {
+    const code = (err as NodeJS.ErrnoException).code;
+    if (code === "EEXIST") {
+      const lock = readSidecarLock();
+      if (lock && sidecarLockHeldByLiveProcess(lock)) {
+        throw new Error(
+          `maw board: sidecar already running (server=${lock.serverPid ?? "none"}); run maw board stop first`,
+        );
+      }
+      throw new Error("maw board: sidecar lock contested; retry");
+    }
+    throw err;
+  }
+}
+
+export function finalizeSidecarLock(record: SidecarLockRecord): void {
+  writeSidecarLock(record);
+}
+
+export function assertSidecarLockAvailable(): void {
+  cleanupStaleSidecarLock();
 }
 
 export function isPidAlive(pid: number | undefined): boolean {

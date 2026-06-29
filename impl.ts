@@ -25,6 +25,12 @@ import {
 export async function cmdWorkboard(args: string[]): Promise<void> {
   const opts = parseWorkboardArgs(args);
 
+  if (opts.ssh) {
+    const { cmdWorkboardSsh } = await import("./ssh");
+    await cmdWorkboardSsh(opts);
+    return;
+  }
+
   if (opts.install) {
     const { cmdWorkboardInstall } = await import("./install");
     await cmdWorkboardInstall(opts);
