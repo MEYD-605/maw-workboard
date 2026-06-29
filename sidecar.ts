@@ -25,10 +25,12 @@ import {
   logPath,
   readCurrentInstall,
   readPid,
+  assertSidecarLockAvailable,
   readRuntimeState,
   readTextIfExists,
   removePid,
   writePid,
+  writeSidecarLock,
   writePrivateText,
   writeRuntimeState,
 } from "./state";
@@ -279,6 +281,7 @@ async function startClient(runtime: WorkboardRuntime, opts: WorkboardOptions, ur
 }
 
 export async function ensureWorkboardSidecar(opts: WorkboardOptions): Promise<WorkboardSidecarResult> {
+  assertSidecarLockAvailable();
   const urlFile = resolveUrlFile(opts);
   const origin = buildWorkboardOrigin(opts);
   const goUrl = buildWorkboardUrl(opts);
@@ -322,6 +325,14 @@ export async function ensureWorkboardSidecar(opts: WorkboardOptions): Promise<Wo
     boardUrl = client.url;
     clientStarted = true;
   }
+
+  writeSidecarLock({
+    ownerPid: process.pid,
+    serverPid,
+    clientPid,
+    origin,
+    startedAt: new Date().toISOString(),
+  });
 
   writeRuntimeState({
     serverPid,
